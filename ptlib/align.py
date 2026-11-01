@@ -407,3 +407,15 @@ def completion_accuracy(model, pairs, fmt="{a}+{b}="):
     outs = lm.generate(model, [fmt.format(a=a, b=b) for a, b in pairs], max_new=8, greedy=True)
     first = [o.split("\n")[0].strip().rstrip(".") for o in outs]
     return float(np.mean([f.split(" ")[0] == str(a + b) for f, (a, b) in zip(first, pairs)]))
+
+
+@torch.no_grad()
+def kl_to_ref(policy, ref, pairs=None, digits=2, seed=0):
+    """Monte-Carlo KL(pi || pi_ref) per response: mean over policy samples of sum_t log pi - log pi_ref."""
+    set_seed(seed)
+    pairs = pairs if pairs is not None else (tasks.TEST_2D if digits == 2 else tasks.TEST_3D)
+    rng = np.random.default_rng(seed)
+    P = [tasks.make_prompt(a, b, rng=rng) for a, b in pairs]
+    R = lm.generate(policy, P)
+    policy.eval(); ref.eval()
+    return float((lm.sequence_logprobs(policy, P, R) - lm.sequence_logprobs(ref, P, R)).mean())
