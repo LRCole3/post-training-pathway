@@ -29,8 +29,8 @@ narrative first expected.
 | # | Notebook | Methods | Question it answers | Limitation that motivates the next step | Status |
 |---|---|---|---|---|---|
 | 01 | [Pretraining a transformer LM](01_pretraining_transformer_lm.ipynb) | Char-level GPT, next-token loss, AdamW + cosine, mini scaling study | What does a base model know, and why won't it answer? | Knows arithmetic, scores 0% in chat format | available |
-| 02 | [Supervised fine-tuning & LoRA](02_sft_and_lora.ipynb) | Masked SFT loss, full FT vs LoRA, forgetting, LIMA-style data curation | Can demonstrations teach the behaviour? | Copies demonstrators' mistakes; clean demos are expensive | coming next |
-| 03 | [Reward models & RLHF with PPO](03_reward_models_and_rlhf_ppo.ipynb) | Bradley–Terry RM, PPO + KL penalty, GAE, best-of-n | Can we learn from comparisons instead? | Reward hacking; four models; fragile | coming next |
+| 02 | [Supervised fine-tuning & LoRA](02_sft_and_lora.ipynb) | Masked SFT loss, full FT vs LoRA, forgetting, LIMA-style data curation | Can demonstrations teach the behaviour? | Copies demonstrators' mistakes; clean demos are expensive | available |
+| 03 | [Reward models & RLHF with PPO](03_reward_models_and_rlhf_ppo.ipynb) | Bradley–Terry RM, PPO + KL penalty, GAE, best-of-n | Can we learn from comparisons instead? | Reward hacking; four models; fragile | available |
 | 04 | [Direct preference optimization](04_direct_preference_optimization.ipynb) | DPO, IPO, KTO, SimPO | Can we drop the reward model and the RL loop? | Offline: re-weights existing behaviour only | coming next |
 | 05 | [RL with verifiable rewards](05_rlvr_grpo_reasoning.ipynb) | REINFORCE, RLOO, GRPO, Dr. GRPO, STaR, pass@k | What does RL add when the reward can't be fooled? | Sharpens rather than expands; autoregressive only | coming next |
 | 06 | [Diffusion foundations](06_diffusion_foundations.ipynb) | DDPM, ε/v-prediction, DDIM, classifier-free guidance | A different way to generate | Matches data, not goals; many steps | coming next |
