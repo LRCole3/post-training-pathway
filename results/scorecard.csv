@@ -1,0 +1,2 @@
+notebook,model,family,greedy_acc,sampled_acc,well_formed,sentence_style,mean_len,completion_acc_2d,completion_acc_3d
+01_pretraining,base (pretrained),lm,0.0,0.0,0.0,0.0,20.0225,0.9125,0.4125
