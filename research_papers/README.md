@@ -12,6 +12,7 @@ All identifiers were verified programmatically against the arXiv API and CrossRe
 * Jared Kaplan, Sam McCandlish, Tom Henighan et al. (2020). **Scaling Laws for Neural Language Models**. arXiv:2001.08361. [arxiv.org/abs/2001.08361](https://arxiv.org/abs/2001.08361)
 * Ruibin Xiong, Yunchang Yang, Di He et al. (2020). **On Layer Normalization in the Transformer Architecture**. arXiv:2002.04745. [arxiv.org/abs/2002.04745](https://arxiv.org/abs/2002.04745)
 * Jordan Hoffmann, Sebastian Borgeaud, Arthur Mensch et al. (2022). **Training Compute-Optimal Large Language Models**. arXiv:2203.15556. [arxiv.org/abs/2203.15556](https://arxiv.org/abs/2203.15556)
+* Long Ouyang, Jeff Wu, Xu Jiang et al. (2022). **Training language models to follow instructions with human feedback**. arXiv:2203.02155. [arxiv.org/abs/2203.02155](https://arxiv.org/abs/2203.02155)
 
 ## Notebook 02 · Supervised fine-tuning and LoRA
 
@@ -44,7 +45,9 @@ All identifiers were verified programmatically against the arXiv API and CrossRe
 
 * Mohammad Gheshlaghi Azar, Mark Rowland, Bilal Piot et al. (2023). **A General Theoretical Paradigm to Understand Learning from Human Preferences**. arXiv:2310.12036. [arxiv.org/abs/2310.12036](https://arxiv.org/abs/2310.12036)
 * Rafael Rafailov, Archit Sharma, Eric Mitchell et al. (2023). **Direct Preference Optimization: Your Language Model is Secretly a Reward Model**. arXiv:2305.18290. [arxiv.org/abs/2305.18290](https://arxiv.org/abs/2305.18290)
+* Hugo Touvron, Louis Martin, Kevin Stone et al. (2023). **Llama 2: Open Foundation and Fine-Tuned Chat Models**. arXiv:2307.09288. [arxiv.org/abs/2307.09288](https://arxiv.org/abs/2307.09288)
 * Kawin Ethayarajh, Winnie Xu, Niklas Muennighoff et al. (2024). **KTO: Model Alignment as Prospect Theoretic Optimization**. arXiv:2402.01306. [arxiv.org/abs/2402.01306](https://arxiv.org/abs/2402.01306)
+* Aaron Grattafiori, Abhimanyu Dubey, Abhinav Jauhri et al. (2024). **The Llama 3 Herd of Models**. arXiv:2407.21783. [arxiv.org/abs/2407.21783](https://arxiv.org/abs/2407.21783)
 * Jiwoo Hong, Noah Lee, James Thorne (2024). **ORPO: Monolithic Preference Optimization without Reference Model**. arXiv:2403.07691. [arxiv.org/abs/2403.07691](https://arxiv.org/abs/2403.07691)
 * Yu Meng, Mengzhou Xia, Danqi Chen (2024). **SimPO: Simple Preference Optimization with a Reference-Free Reward**. arXiv:2405.14734. [arxiv.org/abs/2405.14734](https://arxiv.org/abs/2405.14734)
 * Arka Pal, Deep Karkhanis, Samuel Dooley et al. (2024). **Smaug: Fixing Failure Modes of Preference Optimisation with DPO-Positive**. arXiv:2402.13228. [arxiv.org/abs/2402.13228](https://arxiv.org/abs/2402.13228)
@@ -59,6 +62,7 @@ All identifiers were verified programmatically against the arXiv API and CrossRe
 * Karl Cobbe, Vineet Kosaraju, Mohammad Bavarian et al. (2021). **Training Verifiers to Solve Math Word Problems**. arXiv:2110.14168. [arxiv.org/abs/2110.14168](https://arxiv.org/abs/2110.14168)
 * Eric Zelikman, Yuhuai Wu, Jesse Mu et al. (2022). **STaR: Bootstrapping Reasoning With Reasoning**. arXiv:2203.14465. [arxiv.org/abs/2203.14465](https://arxiv.org/abs/2203.14465)
 * Hunter Lightman, Vineet Kosaraju, Yura Burda et al. (2023). **Let's Verify Step by Step**. arXiv:2305.20050. [arxiv.org/abs/2305.20050](https://arxiv.org/abs/2305.20050)
+* Hugo Touvron, Louis Martin, Kevin Stone et al. (2023). **Llama 2: Open Foundation and Fine-Tuned Chat Models**. arXiv:2307.09288. [arxiv.org/abs/2307.09288](https://arxiv.org/abs/2307.09288)
 * Arash Ahmadian, Chris Cremer, Matthias Gallé et al. (2024). **Back to Basics: Revisiting REINFORCE Style Optimization for Learning from Human Feedback in LLMs**. arXiv:2402.14740. [arxiv.org/abs/2402.14740](https://arxiv.org/abs/2402.14740)
 * Nathan Lambert, Jacob Morrison, Valentina Pyatkin et al. (2024). **Tulu 3: Pushing Frontiers in Open Language Model Post-Training**. arXiv:2411.15124. [arxiv.org/abs/2411.15124](https://arxiv.org/abs/2411.15124)
 * Zhihong Shao, Peiyi Wang, Qihao Zhu et al. (2024). **DeepSeekMath: Pushing the Limits of Mathematical Reasoning in Open Language Models**. arXiv:2402.03300. [arxiv.org/abs/2402.03300](https://arxiv.org/abs/2402.03300)
@@ -100,6 +104,7 @@ All identifiers were verified programmatically against the arXiv API and CrossRe
 
 ## Notebook 08 · Distillation for few-step sampling
 
+* Yaron Lipman, Ricky T. Q. Chen, Heli Ben-Hamu et al. (2022). **Flow Matching for Generative Modeling**. arXiv:2210.02747. [arxiv.org/abs/2210.02747](https://arxiv.org/abs/2210.02747)
 * Xingchao Liu, Chengyue Gong, Qiang Liu (2022). **Flow Straight and Fast: Learning to Generate and Transfer Data with Rectified Flow**. arXiv:2209.03003. [arxiv.org/abs/2209.03003](https://arxiv.org/abs/2209.03003)
 * Chenlin Meng, Robin Rombach, Ruiqi Gao et al. (2022). **On Distillation of Guided Diffusion Models**. arXiv:2210.03142. [arxiv.org/abs/2210.03142](https://arxiv.org/abs/2210.03142)
 * Tim Salimans, Jonathan Ho (2022). **Progressive Distillation for Fast Sampling of Diffusion Models**. arXiv:2202.00512. [arxiv.org/abs/2202.00512](https://arxiv.org/abs/2202.00512)
@@ -121,13 +126,19 @@ All identifiers were verified programmatically against the arXiv API and CrossRe
 * Junsong Chen, Jincheng Yu, Chongjian Ge et al. (2023). **PixArt-$α$: Fast Training of Diffusion Transformer for Photorealistic Text-to-Image Synthesis**. arXiv:2310.00426. [arxiv.org/abs/2310.00426](https://arxiv.org/abs/2310.00426)
 * Patrick Esser, Sumith Kulal, Andreas Blattmann et al. (2024). **Scaling Rectified Flow Transformers for High-Resolution Image Synthesis**. arXiv:2403.03206. [arxiv.org/abs/2403.03206](https://arxiv.org/abs/2403.03206)
 * Nanye Ma, Mark Goldstein, Michael S. Albergo et al. (2024). **SiT: Exploring Flow and Diffusion-based Generative Models with Scalable Interpolant Transformers**. arXiv:2401.08740. [arxiv.org/abs/2401.08740](https://arxiv.org/abs/2401.08740)
+* Black Forest Labs, Stephen Batifol, Andreas Blattmann et al. (2025). **FLUX.1 Kontext: Flow Matching for In-Context Image Generation and Editing in Latent Space**. arXiv:2506.15742. [arxiv.org/abs/2506.15742](https://arxiv.org/abs/2506.15742)
 
 ## Notebook 10 · Capstone: post-training a diffusion transformer
 
 * Jacob Austin, Daniel D. Johnson, Jonathan Ho et al. (2021). **Structured Denoising Diffusion Models in Discrete State-Spaces**. arXiv:2107.03006. [arxiv.org/abs/2107.03006](https://arxiv.org/abs/2107.03006)
+* Long Ouyang, Jeff Wu, Xu Jiang et al. (2022). **Training language models to follow instructions with human feedback**. arXiv:2203.02155. [arxiv.org/abs/2203.02155](https://arxiv.org/abs/2203.02155)
+* Hunter Lightman, Vineet Kosaraju, Yura Burda et al. (2023). **Let's Verify Step by Step**. arXiv:2305.20050. [arxiv.org/abs/2305.20050](https://arxiv.org/abs/2305.20050)
 * Aaron Lou, Chenlin Meng, Stefano Ermon (2023). **Discrete Diffusion Modeling by Estimating the Ratios of the Data Distribution**. arXiv:2310.16834. [arxiv.org/abs/2310.16834](https://arxiv.org/abs/2310.16834)
+* Simian Luo, Yiqin Tan, Longbo Huang et al. (2023). **Latent Consistency Models: Synthesizing High-Resolution Images with Few-Step Inference**. arXiv:2310.04378. [arxiv.org/abs/2310.04378](https://arxiv.org/abs/2310.04378)
+* Axel Sauer, Dominik Lorenz, Andreas Blattmann et al. (2023). **Adversarial Diffusion Distillation**. arXiv:2311.17042. [arxiv.org/abs/2311.17042](https://arxiv.org/abs/2311.17042)
 * Hugo Touvron, Louis Martin, Kevin Stone et al. (2023). **Llama 2: Open Foundation and Fine-Tuned Chat Models**. arXiv:2307.09288. [arxiv.org/abs/2307.09288](https://arxiv.org/abs/2307.09288)
 * Bram Wallace, Meihua Dang, Rafael Rafailov et al. (2023). **Diffusion Model Alignment Using Direct Preference Optimization**. arXiv:2311.12908. [arxiv.org/abs/2311.12908](https://arxiv.org/abs/2311.12908)
+* Tianwei Yin, Michaël Gharbi, Richard Zhang et al. (2023). **One-step Diffusion with Distribution Matching Distillation**. arXiv:2311.18828. [arxiv.org/abs/2311.18828](https://arxiv.org/abs/2311.18828)
 * Patrick Esser, Sumith Kulal, Andreas Blattmann et al. (2024). **Scaling Rectified Flow Transformers for High-Resolution Image Synthesis**. arXiv:2403.03206. [arxiv.org/abs/2403.03206](https://arxiv.org/abs/2403.03206)
 * Aaron Grattafiori, Abhimanyu Dubey, Abhinav Jauhri et al. (2024). **The Llama 3 Herd of Models**. arXiv:2407.21783. [arxiv.org/abs/2407.21783](https://arxiv.org/abs/2407.21783)
 * Nathan Lambert, Jacob Morrison, Valentina Pyatkin et al. (2024). **Tulu 3: Pushing Frontiers in Open Language Model Post-Training**. arXiv:2411.15124. [arxiv.org/abs/2411.15124](https://arxiv.org/abs/2411.15124)
@@ -138,4 +149,5 @@ All identifiers were verified programmatically against the arXiv API and CrossRe
 * Jie Liu, Gongye Liu, Jiajun Liang et al. (2025). **Flow-GRPO: Training Flow Matching Models via Online RL**. arXiv:2505.05470. [arxiv.org/abs/2505.05470](https://arxiv.org/abs/2505.05470)
 * Shen Nie, Fengqi Zhu, Zebin You et al. (2025). **Large Language Diffusion Models**. arXiv:2502.09992. [arxiv.org/abs/2502.09992](https://arxiv.org/abs/2502.09992)
 * Zeyue Xue, Jie Wu, Yu Gao et al. (2025). **DanceGRPO: Unleashing GRPO on Visual Generation**. arXiv:2505.07818. [arxiv.org/abs/2505.07818](https://arxiv.org/abs/2505.07818)
+* Qiying Yu, Zheng Zhang, Ruofei Zhu et al. (2025). **DAPO: An Open-Source LLM Reinforcement Learning System at Scale**. arXiv:2503.14476. [arxiv.org/abs/2503.14476](https://arxiv.org/abs/2503.14476)
 * Siyan Zhao, Devaansh Gupta, Qinqing Zheng et al. (2025). **d1: Scaling Reasoning in Diffusion Large Language Models via Reinforcement Learning**. arXiv:2504.12216. [arxiv.org/abs/2504.12216](https://arxiv.org/abs/2504.12216)

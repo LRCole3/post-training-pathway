@@ -22,7 +22,9 @@ with a **ground truth**:
 
 The trade-off: these notebooks show the **mechanisms and failure modes** of each method, not the headline
 numbers from the papers. Results are reported as measured, including the ones that didn't go the way the
-narrative first expected.
+narrative first expected. Some examples: a more accurate reward model produced a *worse* PPO policy (03);
+rejection sampling beat GRPO on the same sampling budget (05); LoRA did not prevent drift when adapting a diffusion
+model (07); a transformer denoiser was no better than an MLP on 8×8 digits (09).
 
 ## Learning path
 
@@ -37,7 +39,7 @@ narrative first expected.
 | 07 | [Post-training diffusion models](07_posttraining_diffusion_alignment.ipynb) | LoRA/DreamBooth-style adaptation, DDPO, DRaFT, Diffusion-DPO | Can RLHF ideas steer a denoiser? | Reward hacking again; still slow | available |
 | 08 | [Distillation for few-step sampling](08_diffusion_distillation_few_step.ipynb) | Progressive distillation, consistency distillation, reflow | Can post-training make sampling 10-100x cheaper? | Small denoisers don't scale | available |
 | 09 | [Diffusion transformers & flow matching](09_diffusion_transformers_flow_matching.ipynb) | Patch tokens, adaLN-Zero DiT, rectified flow, joint text-image attention | What architecture do modern image models use? | Needs post-training too | available |
-| 10 | [Capstone: post-training a DiT](10_capstone_posttraining_dit.ipynb) | Flow-GRPO, Diffusion-DPO on a DiT, masked diffusion LM + GRPO, landscape map | How do the two threads meet? | → research frontier | coming next |
+| 10 | [Capstone: post-training a DiT](10_capstone_posttraining_dit.ipynb) | Flow-GRPO, Diffusion-DPO on a DiT, masked diffusion LM + GRPO, landscape map | How do the two threads meet? | → research frontier | available |
 
 ## Getting started
 
@@ -52,6 +54,17 @@ Run the notebooks **in order, from the repository root**. Each notebook saves it
 (git-ignored). If a checkpoint a notebook needs is missing, `ptlib` re-creates it with the same settings as
 the notebook that originally trained it, so any notebook can also be run on its own. No GPU is needed.
 
+Measured compute time per notebook on a 16-core laptop CPU (macOS, torch 2.x). Runs marked * shared the CPU
+with other jobs, so they are upper bounds; † estimated, because the machine slept during that run:
+
+| 01 | 02 | 03 | 04 | 05 | 06 | 07 | 08 | 09 | 10 |
+|---|---|---|---|---|---|---|---|---|---|
+| 6 min | 1.5 min | 13 min | 5 min | 5.5 min | 5.5 min | 14 min* | 8 min* | 15 min* | ~20 min† |
+
+Notebooks 01-05 build on each other's checkpoints (base model → SFT model → preference data), as do 06-10
+(base denoiser, judge, text DiT). If a needed checkpoint is missing, `ptlib` rebuilds it automatically, which adds that
+notebook's training time.
+
 ## Repository layout
 
 ```
@@ -62,12 +75,16 @@ the notebook that originally trained it, so any notebook can also be run on its 
 │   ├── align.py      # SFT, reward model, PPO, DPO/IPO/KTO/SimPO, GRPO/RLOO, pass@k
 │   ├── images.py     # 8x8 digits, judge classifier, plotting
 │   ├── diffusion.py  # DDPM/DDIM, guidance, flow matching, DiT (notebooks 06-10)
+│   ├── dit.py        # DiT with adaLN-Zero, text-conditioned DiT with joint attention (notebooks 09-10)
+│   ├── mdlm.py       # masked diffusion language model + d1-style GRPO (notebook 10)
 │   └── metrics.py    # shared scorecard (LM and image metrics)
 ├── research_papers/
 │   ├── README.md     # every cited paper, by notebook, with verified arXiv/DOI links
 │   ├── catalog.py    # the citation list (keys, arXiv IDs, notebooks)
 │   └── make_index.py # regenerates README.md from catalog.py + arxiv_meta.json
-├── results/scorecard.csv
+├── results/
+│   ├── scorecard.csv         # rows appended by every notebook
+│   └── series_scorecard.csv  # all models side by side (written by notebook 10)
 └── requirements.txt
 ```
 
