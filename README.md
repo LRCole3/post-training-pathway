@@ -35,7 +35,7 @@ narrative first expected.
 | 05 | [RL with verifiable rewards](05_rlvr_grpo_reasoning.ipynb) | REINFORCE, RLOO, GRPO, Dr. GRPO, STaR, pass@k | What does RL add when the reward can't be fooled? | Sharpens rather than expands; autoregressive only | available |
 | 06 | [Diffusion foundations](06_diffusion_foundations.ipynb) | DDPM, ε/v-prediction, DDIM, classifier-free guidance | A different way to generate | Matches data, not goals; many steps | available |
 | 07 | [Post-training diffusion models](07_posttraining_diffusion_alignment.ipynb) | LoRA/DreamBooth-style adaptation, DDPO, DRaFT, Diffusion-DPO | Can RLHF ideas steer a denoiser? | Reward hacking again; still slow | available |
-| 08 | [Distillation for few-step sampling](08_diffusion_distillation_few_step.ipynb) | Progressive distillation, consistency distillation, reflow | Can post-training make sampling 10-100x cheaper? | Small denoisers don't scale | coming next |
+| 08 | [Distillation for few-step sampling](08_diffusion_distillation_few_step.ipynb) | Progressive distillation, consistency distillation, reflow | Can post-training make sampling 10-100x cheaper? | Small denoisers don't scale | available |
 | 09 | [Diffusion transformers & flow matching](09_diffusion_transformers_flow_matching.ipynb) | Patch tokens, adaLN-Zero DiT, rectified flow, joint text-image attention | What architecture do modern image models use? | Needs post-training too | coming next |
 | 10 | [Capstone: post-training a DiT](10_capstone_posttraining_dit.ipynb) | Flow-GRPO, Diffusion-DPO on a DiT, masked diffusion LM + GRPO, landscape map | How do the two threads meet? | → research frontier | coming next |
 
