@@ -63,14 +63,17 @@ def get_judge(verbose=True):
         perm = torch.randperm(len(Xtr))
         for i in range(0, len(Xtr), 64):
             xb, yb = Xtr[perm[i:i + 64]], ytr[perm[i:i + 64]]
+            thick = torch.rand(len(xb)) < 0.4                  # 40% of each batch drawn with bold strokes,
+            xb = torch.where(thick[:, None], bold(xb), xb)      # so the judge also recognises bold digits
             xb = (xb + 0.1 * torch.randn_like(xb)).clamp(-1, 1)
             loss = F.cross_entropy(j(xb), yb)
             opt.zero_grad(); loss.backward(); opt.step()
     j.eval()
     with torch.no_grad():
         acc = (j(Xte).argmax(1) == yte).float().mean().item()
+        acc_b = (j(bold(Xte)).argmax(1) == yte).float().mean().item()
     if verbose:
-        print(f"judge trained: held-out accuracy {acc:.3f}")
+        print(f"judge trained: held-out accuracy {acc:.3f} (normal), {acc_b:.3f} (bold strokes)")
     os.makedirs(CKPT_DIR, exist_ok=True)
     torch.save(j.state_dict(), path)
     return j.requires_grad_(False)
@@ -89,3 +92,19 @@ def show_grid(X, nrow=10, ax=None, title=None):
     if title:
         ax.set_title(title)
     return ax
+
+
+class PixelKNN:
+    """A second, very different classifier (k-nearest neighbours on raw pixels, normal + bold training digits).
+
+    Notebooks 07 and 10 optimise rewards that involve the CNN judge; this one is never optimised against, so it
+    plays the role of a held-out human evaluation."""
+
+    def __init__(self, k=5):
+        from sklearn.neighbors import KNeighborsClassifier
+        Xtr, ytr, _, _ = load_digits_tensor()
+        X = torch.cat([Xtr, bold(Xtr)]).numpy(); y = torch.cat([ytr, ytr]).numpy()
+        self.clf = KNeighborsClassifier(k).fit(X, y)
+
+    def accuracy(self, x, labels):
+        return float((self.clf.predict(x.clamp(-1, 1).numpy()) == labels.numpy()).mean())

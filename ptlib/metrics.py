@@ -39,7 +39,7 @@ def load_scorecard(path=None):
 def _frechet(a, b):
     mu1, mu2 = a.mean(0), b.mean(0)
     s1, s2 = np.cov(a, rowvar=False), np.cov(b, rowvar=False)
-    covmean, _ = linalg.sqrtm(s1 @ s2, disp=False)
+    covmean = linalg.sqrtm(s1 @ s2)
     return float(((mu1 - mu2) ** 2).sum() + np.trace(s1 + s2 - 2 * covmean.real))
 
 
@@ -60,6 +60,8 @@ class ImageScorecard:
         self.judge, self.Xtr, self.Xte, self.yte = judge, X_train, X_test, y_test
         with torch.no_grad():
             self.f_te = judge.features(X_test).numpy()
+        g = torch.Generator().manual_seed(0)
+        self.Xtr_ref = X_train[torch.randperm(len(X_train), generator=g)[:len(X_test)]]
         self.rows = []
 
     @torch.no_grad()
@@ -67,8 +69,8 @@ class ImageScorecard:
         s = samples.clamp(-1, 1)
         f = self.judge.features(s).numpy()
         prec, cov = _prc(self.f_te, f[:len(self.f_te)])
-        d_tr = torch.cdist(s, self.Xtr).min(1).values
-        d_te = torch.cdist(s, self.Xte).min(1).values
+        d_tr = torch.cdist(s, self.Xtr_ref).min(1).values      # equal-size reference sets, so a novel
+        d_te = torch.cdist(s, self.Xte).min(1).values          # sample has nn_ratio close to 1
         row = dict(model=name, fd=_frechet(self.f_te, f), precision=prec, coverage=cov,
                    nn_ratio=float((d_tr / d_te).median()), nfe=nfe)
         if labels is not None:
@@ -77,9 +79,23 @@ class ImageScorecard:
         self.rows.append(row)
         return row
 
+    @torch.no_grad()
     def real_baseline(self):
-        """The held-out test set scored against itself via the training split: the 'perfect model' row."""
-        return self.evaluate(self.Xtr[:len(self.Xte)], "real data (train split)", labels=None, nfe=0)
+        """Real training images scored like samples: the 'perfect model' reference row.
+
+        FD/precision/coverage use a random training subset of the test-set size (finite-sample floor).
+        nn_ratio uses held-out test images (nearest train vs nearest *other* test image), so ~1 = novel.
+        """
+        g = torch.Generator().manual_seed(1)
+        sub = self.Xtr[torch.randperm(len(self.Xtr), generator=g)[:len(self.Xte)]]
+        f = self.judge.features(sub).numpy()
+        prec, cov = _prc(self.f_te, f)
+        d_te = torch.cdist(self.Xte, self.Xte); d_te.fill_diagonal_(float("inf"))
+        ratio = float((torch.cdist(self.Xte, self.Xtr_ref).min(1).values / d_te.min(1).values).median())
+        row = dict(model="real data", fd=_frechet(self.f_te, f), precision=prec, coverage=cov, nn_ratio=ratio, nfe=0,
+                   judge_acc=float((self.judge(self.Xte).argmax(1) == self.yte).float().mean()))
+        self.rows.append(row)
+        return row
 
     def table(self):
         return pd.DataFrame(self.rows).set_index("model")
