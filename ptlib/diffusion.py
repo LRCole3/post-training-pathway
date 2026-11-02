@@ -262,7 +262,7 @@ def ddpo(model, reward_fn, iters=60, batch=64, steps=20, lr=3e-5, clip=1e-4, inn
                     loss = loss + kl_coef * (((mean - mean_ref) ** 2).sum(-1) / (2 * sigma[:, 0] ** 2)).mean()
                 opt.zero_grad(); loss.backward(); torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0); opt.step()
         row = dict(iter=it + 1, reward=r.mean().item())
-        if eval_fn is not None and ((it + 1) % log_every == 0 or it == 0):
+        if eval_fn is not None and ((log_every and (it + 1) % log_every == 0) or it == 0):
             row.update(eval_fn(model))
         hist.append(row)
         if log_every and (it + 1) % log_every == 0:
@@ -293,7 +293,7 @@ def draft(model, reward_fn, iters=200, batch=64, steps=20, K=1, lr=1e-5, seed=0,
         loss = -r.mean()
         opt.zero_grad(); loss.backward(); torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0); opt.step()
         row = dict(iter=it + 1, reward=r.mean().item())
-        if eval_fn is not None and ((it + 1) % log_every == 0 or it == 0):
+        if eval_fn is not None and ((log_every and (it + 1) % log_every == 0) or it == 0):
             row.update(eval_fn(model))
         hist.append(row)
         if log_every and (it + 1) % log_every == 0:
@@ -322,7 +322,7 @@ def diffusion_dpo(model, ref, x_w, x_l, labels, iters=600, batch=64, beta=500.0,
         loss = -F.logsigmoid(-beta * h).mean()
         opt.zero_grad(); loss.backward(); opt.step()
         row = dict(iter=it + 1, loss=loss.item())
-        if eval_fn is not None and ((it + 1) % log_every == 0 or it == 0):
+        if eval_fn is not None and ((log_every and (it + 1) % log_every == 0) or it == 0):
             row.update(eval_fn(model))
         hist.append(row)
         if log_every and (it + 1) % log_every == 0:
@@ -539,3 +539,76 @@ def sample_flow(model, labels, steps=20, w=0.0, x_T=None, grad=False, return_tra
 
 def model_dim(model):
     return model.inp.in_features if hasattr(model, "inp") else model.d_in
+
+
+# ---------------------------------------------------------------- Flow-GRPO (notebook 10)
+def flow_sde_step_mean(model, x, s, ds, c, a=0.7, w=0.0):
+    """One step s -> s - ds of the reverse SDE with the same marginals as the flow ODE (Liu et al., 2025, Flow-GRPO).
+
+    With x_s = (1-s) x0 + s z, the score is -(x + (1-s) v)/s, so
+      x_{s-ds} = x_s - v ds - sigma^2/(2s) (x_s + (1-s) v) ds + sigma sqrt(ds) eps,   sigma = a sqrt(s / (1-s)).
+    Returns (mean, std) of the Gaussian transition."""
+    n = len(x)
+    v = guided(model, x, torch.full((n,), s * (T - 1)), c, w)
+    sig = a * math.sqrt(min(s, 0.95) / (1 - min(s, 0.95)))
+    mean = x - v * ds - (sig ** 2) / (2 * s) * (x + (1 - s) * v) * ds
+    return mean, torch.full((n, 1), sig * math.sqrt(ds))
+
+
+def flow_sde_sample_with_logprob(model, c, steps=10, a=0.7, w=0.0):
+    """Stochastic sampling that records transitions; the last step is a deterministic Euler step to s = 0."""
+    n = len(c)
+    x = torch.randn(n, model_dim(model))
+    ds = 1.0 / steps
+    log = []
+    with torch.no_grad():
+        for i in range(steps - 1):
+            s = 1 - i * ds
+            mean, std = flow_sde_step_mean(model, x, s, ds, c, a, w)
+            x_next = mean + std * torch.randn_like(x)
+            log.append((x, s, x_next))
+            x = x_next
+        s = ds
+        x = x - ds * guided(model, x, torch.full((n,), s * (T - 1)), c, w)
+    return x.clamp(-1, 1), log
+
+
+def flow_grpo(model, ref, prompt_ids, reward_fn, iters=100, n_prompts=8, G=8, steps=10, lr=2e-5, beta=0.01, clip=1e-3, a=0.7,
+              seed=0, log_every=20, eval_fn=None):
+    """Flow-GRPO: GRPO (notebook 05) over the SDE-ised sampling chain of a flow model.
+
+    prompt_ids: (P, ...) tensor of conditions (class labels or caption ids); each iteration samples n_prompts of them,
+    draws G images per prompt, normalises rewards within each group, and takes clipped policy-gradient steps on every
+    transition, with a KL penalty to the reference model's transitions."""
+    set_seed(seed)
+    model.requires_grad_(True)
+    opt = torch.optim.Adam(model.parameters(), lr=lr)
+    hist = []
+    for it in range(iters):
+        model.eval()
+        pick = torch.randint(0, len(prompt_ids), (n_prompts,))
+        c = prompt_ids[pick].repeat_interleave(G, 0)
+        x0, traj = flow_sde_sample_with_logprob(model, c, steps, a)
+        r = reward_fn(x0, c).float()
+        g = r.view(n_prompts, G)
+        adv = ((g - g.mean(1, keepdim=True)) / (g.std(1, keepdim=True) + 1e-4)).view(-1).detach()
+        ds = 1.0 / steps
+        with torch.no_grad():
+            old = [gaussian_logprob(xn, *flow_sde_step_mean(model, x, s, ds, c, a)) for x, s, xn in traj]
+        model.train()
+        for k, (x, s, xn) in enumerate(traj):
+            mean, std = flow_sde_step_mean(model, x, s, ds, c, a)
+            ratio = torch.exp(gaussian_logprob(xn, mean, std) - old[k])
+            loss = -torch.min(ratio * adv, ratio.clamp(1 - clip, 1 + clip) * adv).mean()
+            if beta > 0:
+                with torch.no_grad():
+                    mean_ref, _ = flow_sde_step_mean(ref, x, s, ds, c, a)
+                loss = loss + beta * (((mean - mean_ref) ** 2).sum(-1) / (2 * std[:, 0] ** 2)).mean()
+            opt.zero_grad(); loss.backward(); torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0); opt.step()
+        row = dict(iter=it + 1, reward=r.mean().item(), groups_no_signal=(g.std(1) == 0).float().mean().item())
+        if eval_fn is not None and ((log_every and (it + 1) % log_every == 0) or it == 0):
+            row.update(eval_fn(model))
+        hist.append(row)
+        if log_every and (it + 1) % log_every == 0:
+            print({k: round(v, 3) if isinstance(v, float) else v for k, v in row.items()})
+    return model.eval(), hist
